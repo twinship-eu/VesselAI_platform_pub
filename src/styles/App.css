@@ -1,0 +1,12 @@
+body {
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+}
+
+option {
+  color: black;
+}
+
+/* Loader-specific styles moved to component CSS module to avoid global leakage */
+
+

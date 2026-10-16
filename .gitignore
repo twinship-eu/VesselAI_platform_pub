@@ -1,0 +1,56 @@
+# Environment files and local secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+credentials.json
+service-account*.json
+
+# Dependencies and generated output
+node_modules/
+.next/
+dist/
+build/
+coverage/
+out/
+*.tsbuildinfo
+
+# Logs and runtime files
+*.log
+logs/
+*.pid
+*.seed
+*.pid.lock
+
+# Package-manager caches
+.npm/
+.yarn/cache/
+.yarn/unplugged/
+.pnpm-store/
+
+# Editors and operating systems
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# Local certificates, SSH material, and cloud credentials
+.ssh/
+.aws/
+.azure/
+.config/gcloud/
+kubeconfig*
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.bak
+

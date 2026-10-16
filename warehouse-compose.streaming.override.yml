@@ -1,0 +1,16 @@
+# Compose override to mount Control Plane Spark jobs into the warehouse Spark container.
+#
+# Usage (from your data-warehouse repo root):
+#   docker compose -f docker-compose.yml -f warehouse-compose.streaming.override.yml up -d
+#
+# Set CONTROL_PLANE_SPARK_JOBS_DIR to the host folder that contains the streaming scripts.
+# Example:
+#   CONTROL_PLANE_SPARK_JOBS_DIR=../vesselai_frontend/backend/spark
+#
+services:
+  spark:
+    volumes:
+      - ${CONTROL_PLANE_SPARK_JOBS_DIR:-../backend/spark}:/opt/streaming:ro
+
+  # If you run submissions from a different container (e.g., spark-master vs spark),
+  # duplicate the same mount under that service name.

@@ -1,0 +1,107 @@
+/* Scoped styles for SpeedboatLoader component */
+.loader {
+  display: inline-block;
+  position: relative;
+  /* default CSS variables scoped to this component instance */
+  --wave-color: #abc8e8;
+  --boat-color: #abc8e8;
+  --hull-color: #abc8e8;
+  --anim-speed: 1.6s;
+  /* Wider default to let waves span most of the loader width when scaled */
+  --wave-width-pct: 600%;
+}
+
+/* Ensure the two SVG layers are stacked correctly */
+.wavesSvg {
+  position: absolute;
+  left: 50%;
+  bottom: 0; /* stick waves to bottom */
+  transform: translateX(-50%);
+  width: var(--wave-width-pct, 300%);
+  height: 65%; /* waves occupy more vertical space for a fuller look */
+  z-index: 1; /* behind boat */
+  pointer-events: none;
+  overflow: hidden; /* ⬅️ crop so they don't spill into boat area */
+}
+
+.boatSvg {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%) translateY(calc(-1 * var(--boat-offset, 20px))) translateZ(0);
+  width: 100%;
+  height: 100%;
+  z-index: 2; /* ⬅️ ensure always above waves */
+  pointer-events: none;
+}
+
+/* Remove default inline SVG gaps and ensure SVGs render block-level to avoid
+   extra baseline whitespace that creates a gap between the loader and text */
+.wavesSvg, .boatSvg, .loader > div > svg {
+  display: block;
+  line-height: 0;
+}
+
+.waves {
+  fill: var(--wave-color);
+  stroke: none;
+}
+
+.wave {
+  opacity: 0.9;
+}
+
+.wave-back {
+  stroke-width: 1.0;
+  opacity: 0.35;
+  animation: wave-move var(--anim-speed) linear infinite;
+}
+
+.wave-mid {
+  stroke-width: 1.4;
+  opacity: 0.6;
+  animation: wave-move calc(var(--anim-speed) * 0.9) linear infinite;
+}
+
+.wave-front {
+  stroke-width: 1.8;
+  opacity: 1;
+  animation: wave-move calc(var(--anim-speed) * 0.8) linear infinite;
+}
+
+.boat {
+  transform-origin: 50% 50%;
+  /* use a CSS var for bob amplitude so it can be tuned at runtime */
+  animation: boat-bob calc(var(--anim-speed) * 0.9) ease-in-out infinite;
+  will-change: transform;
+}
+
+/* Make boat solid and remove outline stroke for a cleaner flat look */
+.boat path {
+  stroke: none !important;
+  fill: var(--boat-color) !important;
+}
+
+/* Ensure transforms on svg groups don't create unexpected stacking contexts */
+.loader, .wavesSvg, .boatSvg {
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+}
+
+/* Promote wave animation to its own layer for smoother movement */
+.wavesSvg, .wave {
+  will-change: transform;
+}
+
+@keyframes wave-move {
+  0% { transform: translateX(0); }
+  /* travel distance comes from CSS var so it's adjustable */
+  100% { transform: translateX(calc(-1 * var(--wave-anim-distance, 80px))); }
+}
+
+@keyframes boat-bob {
+  0% { transform: translateY(0) rotate(0deg); }
+  40% { transform: translateY(calc(-1 * var(--boat-bob-amp, 4px))) rotate(-0.7deg); }
+  60% { transform: translateY(calc(-1 * var(--boat-bob-amp, 4px) / 2)) rotate(-0.3deg); }
+  100% { transform: translateY(0) rotate(0deg); }
+}

@@ -1,0 +1,29 @@
+routes:
+  # MinIO Console UI (protected)
+  - uri: /minio-console/*
+    name: "minio-console-ui"
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "HEAD", "OPTIONS"]
+    upstream:
+      type: roundrobin
+      nodes:
+        "minio:9001": 1  # MinIO Console port
+    plugins:
+      authz-keycloak:
+        token_endpoint: "$KEYCLOAK_TOKEN_ENDPOINT"
+        permissions: ["minio-access"]
+        client_id: "vesselai-frontend"
+        # Supply this through the deployment's secret-management mechanism.
+        client_secret: "$KEYCLOAK_CLIENT_SECRET"
+        grant_type: "urn:ietf:params:oauth:grant-type:uma-ticket"
+        timeout: 3000
+        access_token_in_authorization_header: true  # Read token from Authorization header
+        access_denied_redirect_uri: "$AUTH_SIGNIN_URL"
+      proxy-rewrite:
+        regex_uri: ["^/minio-console/(.*)", "/$1"]
+      cors:
+        allow_origins: "$CORS_ALLOW_ORIGINS"
+        allow_methods: "GET,POST,PUT,DELETE,PATCH,HEAD,OPTIONS"
+        allow_headers: "DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Authorization"
+        expose_headers: "Content-Length,Content-Range"
+        allow_credentials: true
+#END
